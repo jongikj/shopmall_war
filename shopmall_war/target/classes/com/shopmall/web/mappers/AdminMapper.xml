@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.web.mappers.AdminMapper">
+<select id="sellListMaxSeq" resultType="int">
+	select max(seq) from sell_list;
+</select>
+
+<insert id="insertSellList" parameterType="com.shopmall.web.domains.ShopDTO">
+	insert into sell_list (title, count, image, price, genre, detail, genre_eng)
+	values (#{title}, ${count}, #{image}, ${price}, #{genre}, #{detail}, #{genre_eng});
+</insert>
+
+<insert id="insertDetailImage" parameterType="com.shopmall.web.domains.DetailImageDTO">
+	insert into detail_image (image_url, seq_sell_list) values (#{image_url}, ${seq_sell_list});
+</insert>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.web.mappers.MemberMapper">
+<insert id="signUp" parameterType="com.shopmall.web.domains.MemberDTO">
+	insert into member (id, pw, email, phone) values(#{id}, #{pw}, #{email}, #{phone})
+</insert>
+
+<select id="find" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.MemberDTO">
+	select * from member where ${keyField} = #{keyword} 
+</select>
+
+<select id="checkId" parameterType="string" resultType="int">
+	select count(*) as count from member where id = #{id}
+</select>
+
+<update id="update" parameterType="com.shopmall.web.domains.MemberDTO">
+	update member set pw = #{pw}, email = #{email}, phone = #{phone} where id = #{id}
+</update>
+
+<select id="sellLog" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.MemberShopDTO">
+	select * from (select @NO := @NO + 1 as ROWNUM, A.*
+	from 
+	(
+	select @rownum:=@rownum+1 as seq, log.id, log.date, log.count, list.title, list.image, list.price
+	from sell_log as log inner join sell_list as list
+	on log.seq_sell_list = list.seq, (select @rownum:=0) temp
+	where id = #{keyword} order by seq desc
+	) A,
+	(select @NO := 0) B )C
+	where C.ROWNUM BETWEEN ${start} and ${end};	
+</select>
+
+<insert id="insertSellLog" parameterType="com.shopmall.web.domains.Command">
+	insert into sell_log (seq_sell_list, id, count) values (${seq}, #{keyword}, ${count});
+</insert>
+
+<select id="countSellLog" parameterType="com.shopmall.web.domains.Command" resultType="int">
+	select count(*)
+	from sell_log as log inner join sell_list as list
+	on log.seq_sell_list = list.seq, (select @rownum:=0) temp
+	where id = #{keyword} 
+</select>
+</mapper>

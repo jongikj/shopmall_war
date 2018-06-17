@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.web.mappers.FaqMapper">
+<select id="selectAll" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO">
+	select * from (select @NO := @NO + 1 as ROWNUM, A.*
+	from (select * from faq order by seq desc) A,
+	(select @NO := 0) B )C
+	where C.ROWNUM BETWEEN ${start} and ${end};	
+</select>
+
+<select id="selectAllId" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO">
+	select * from (select @NO := @NO + 1 as ROWNUM, A.*
+	from (select * from faq where id = #{keyword} order by seq desc) A,
+	(select @NO := 0) B )C
+	where C.ROWNUM BETWEEN ${start} and ${end};	
+</select>
+
+<select id="selectOneSeq" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO">
+	select * from faq where seq = ${seq};
+</select>
+
+<select id="countAll" resultType="int">
+	select count(*) from faq;
+</select>
+
+<select id="countId" parameterType="com.shopmall.web.domains.Command" resultType="int">
+	select count(*) from faq where id = #{keyword}
+</select>
+
+<select id="countTitle" parameterType="com.shopmall.web.domains.Command" resultType="int">
+	select count(*) from faq where title like concat('%', #{keyword}, '%')
+</select>
+
+<insert id="insertFaq" parameterType="com.shopmall.web.domains.FaqDTO">
+	insert into faq (title, article, id) values (#{title}, #{article}, #{id});
+</insert>
+
+<select id="nextSelectSeq" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO"> 
+	select * from faq where seq = (select min(seq) from faq where seq > ${seq});	
+</select>
+
+<select id="beforeSelectSeq" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO"> 
+	select * from faq where seq = (select max(seq) from faq where seq &lt; ${seq});	
+</select>
+
+<select id="myNextSelectSeq" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO"> 
+	select * from faq where seq = (select min(seq) from faq where seq > ${seq} and id = #{keyword});	
+</select>
+
+<select id="myBeforeSelectSeq" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO"> 
+	select * from faq where seq = (select max(seq) from faq where seq &lt; ${seq} and id = #{keyword});	
+</select>
+
+<update id="update" parameterType="com.shopmall.web.domains.FaqDTO">
+	update faq set title = #{title}, article = #{article} where seq = ${seq}
+</update>
+
+<delete id="delete" parameterType="com.shopmall.web.domains.Command">
+	delete from faq where seq = ${seq}
+</delete>
+
+<select id="findTitle" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.FaqDTO">
+	select * from (select @NO := @NO + 1 as ROWNUM, A.*
+	from (select * from faq where title like concat('%', #{keyword}, '%') order by seq desc) A,
+	(select @NO := 0) B )C
+	where C.ROWNUM BETWEEN ${start} and ${end};	
+</select>
+</mapper>

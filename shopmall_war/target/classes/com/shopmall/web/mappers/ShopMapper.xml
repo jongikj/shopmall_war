@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.web.mappers.ShopMapper">
+<select id="selectDesc" resultType="com.shopmall.web.domains.ShopDTO">
+	select * from sell_list order by seq desc limit 6;
+</select>
+
+<select id="selectGenreDesc" resultType="com.shopmall.web.domains.ShopDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from sell_list where genre = #{keyword} order by seq desc limit 4;
+</select>
+
+<select id="selectGenre" resultType="com.shopmall.web.domains.ShopDTO">
+	select distinct genre, genre_eng from sell_list order by seq desc;
+</select>
+
+<select id="selectSearchAll" resultType="com.shopmall.web.domains.ShopDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from sell_list where ${keyField} = #{keyword} order by seq desc limit 4;
+</select>
+
+<select id="selectOneSeq" resultType="com.shopmall.web.domains.ShopDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from sell_list where seq = ${keyword};
+</select>
+
+<select id="readBuy" resultType="com.shopmall.web.domains.ShopDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from sell_list where seq = ${seq};
+</select>
+
+<select id="countImage" resultType="int" parameterType="com.shopmall.web.domains.Command">
+	select count(*) as count from detail_image where seq_sell_list = ${seq};
+</select>
+
+<select id="selectDetailImage" resultType="com.shopmall.web.domains.DetailImageDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from detail_image where seq_sell_list = ${seq};
+</select> 
+
+<select id="selectAll" resultType="com.shopmall.web.domains.ShopDTO">
+	select * from sell_list;
+</select>
+
+<select id="genre" resultType="com.shopmall.web.domains.ShopDTO" parameterType="com.shopmall.web.domains.Command">
+	select * from (select @NO := @NO + 1 as ROWNUM, A.*
+	from (select * from sell_list where genre_eng = #{keyword} order by seq desc) A,
+	(select @NO := 0) B )C
+	where C.ROWNUM BETWEEN ${start} and ${end};	
+</select>
+
+<select id="count" resultType="int">
+	select count(*) from sell_list where genre_eng = #{keyword};
+</select>
+
+<select id="checkCount" parameterType="com.shopmall.web.domains.Command" resultType="int">
+	select count from sell_list where seq = #{seq};
+</select>
+
+<update id="updateCount" parameterType="com.shopmall.web.domains.Command">
+	update sell_list set count = count -${count} where seq = ${seq};
+</update>
+
+<insert id="addWishlist" parameterType="com.shopmall.web.domains.Command">
+	insert into basket (seq_sell_list, id) values (${seq}, #{id});
+</insert>
+
+<select id="selectWishOne" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.MemberShopDTO">
+	select * from basket where id = #{id} and seq_sell_list = ${seq};
+</select>
+
+<select id="selectWishAll" parameterType="com.shopmall.web.domains.Command" resultType="com.shopmall.web.domains.MemberShopDTO">
+	select * from 
+	sell_list as s
+	inner join
+	basket as b
+	on s.seq = b.seq_sell_list where id = #{id};
+</select>
+
+<select id="wishCount" parameterType="com.shopmall.web.domains.Command" resultType="int">
+	select count(*) from basket where id = #{id};
+</select>
+
+<delete id="deleteWish" parameterType="com.shopmall.web.domains.Command">
+	delete from basket where id = #{id} and seq_sell_list = ${seq};
+</delete>
+</mapper>
