@@ -12,7 +12,7 @@
 		<cglib-version>2.2.2</cglib-version>
 		<commons-el-version>1.0</commons-el-version>
 		<commons-fileupload-version>1.3.1</commons-fileupload-version>
-		<commons-io-version>2.4</commons-io-version>
+		<commons-io-version>2.7</commons-io-version>
 		<dbcp-version>1.4</dbcp-version>
 		<inject-version>1</inject-version>
 		<jdk-version>1.8</jdk-version>
