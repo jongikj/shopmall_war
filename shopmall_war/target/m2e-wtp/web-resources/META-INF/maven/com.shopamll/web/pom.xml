@@ -17,7 +17,7 @@
 		<inject-version>1</inject-version>
 		<jdk-version>1.8</jdk-version>
 		<jackson-mapper-asl-version>1.9.13</jackson-mapper-asl-version>
-		<jackson-version>2.6.3</jackson-version>
+		<jackson-version>2.13.4.1</jackson-version>
 		<jaxb-impl-version>2.2.2</jaxb-impl-version>
 		<jsp-api-version>2.2</jsp-api-version>
 		<jstl-version>1.2</jstl-version>
